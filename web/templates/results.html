@@ -7,8 +7,24 @@
 <div class="container">
     <form method="POST" action="search/seed">
         
-            {% for result in resp[input_1_type]['items'] %}
-                <input type="checkbox" name="input_1" value="{{result['id']}}">{{result['name']}}<br>
+            {% for result in artist1_id[input_1_type]['items'] %}
+                <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+
+            {% for result in artist2_id[input_2_type]['items'] %}
+                <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+            
+            {% for result in artist3_id[input_3_type]['items'] %}
+                <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+           
+            {% for result in artist4_id[input_4_type]['items'] %}
+                <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+            
+            {% for result in artist5_id[input_5_type]['items'] %}
+                <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
             {% endfor %}
         
 

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, session
 import requests, base64
 from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 from forms import SearchForm
+from utils import get_artist_id
 
 app = Flask(__name__)
 app.secret_key = "password"
@@ -40,18 +41,20 @@ def search_spotify():
     
 
     if form.validate_on_submit():
-
         
-        headers = {'Authorization':'Bearer ' + session['token']}
-        payload = {
-            'q': form.input1.data,
-            'type': form.radio1.data
-        }
+        artist1_id = get_artist_id(form.input1.data)
+        artist2_id = get_artist_id(form.input2.data)
+        artist3_id = get_artist_id(form.input3.data)
+        artist4_id = get_artist_id(form.input4.data)
+        artist5_id = get_artist_id(form.input5.data)
 
         input_1_type = f'{form.radio1.data}s'
+        input_2_type = f'{form.radio2.data}s'
+        input_3_type = f'{form.radio3.data}s'
+        input_4_type = f'{form.radio4.data}s'
+        input_5_type = f'{form.radio5.data}s'
 
-        resp = requests.get('https://api.spotify.com/v1/search', params=payload, headers=headers).json()
-        return render_template("results.html", resp=resp, input_1_type=input_1_type)
+        return render_template("results.html", artist1_id=artist1_id, artist2_id=artist2_id, artist3_id=artist3_id, artist4_id=artist4_id,artist5_id=artist5_id,input_1_type=input_1_type, input_2_type=input_2_type,input_3_type=input_3_type, input_4_type=input_4_type,input_5_type=input_5_type)
 
     return render_template("search.html", form=form)
 
@@ -60,18 +63,22 @@ def search_spotify():
 def show_recommendations():
     """"""
 
-    data = request.form.getlist('input_1')
+    data = ""
+    
+    for id in request.form.getlist('seed_artists'):
+        data += f"{id},"
 
 
     headers = {'Authorization':'Bearer ' + session['token']}
     payload = {
-            'seed_artists': data[0]
+            'seed_artists': data,
+            'limit': 100
         }
-
+    print(data)
 
     resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
 
-    return render_template("results1.html", resp=resp)
+    return render_template("results1.html", resp=resp, data=data)
 
 
 # limit
