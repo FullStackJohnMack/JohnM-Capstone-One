@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Results 1{% endblock %}
+
+{% block content %}
+
+<h1>Seeded Recommendations</h1>
+
+{{data}}
+
+<ul>
+    {% for result in resp['tracks'] %}
+        <li><a href="{{result['external_urls']['spotify']}}" target="blank">{{result['artists'][0].name}} - {{result.name}}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

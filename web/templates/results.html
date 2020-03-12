@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <form method="POST" action="search/seed">
+        
+            {% for result in resp[input_1_type]['items'] %}
+                <input type="checkbox" name="input_1" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+        
+
+        <button class="btn btn-primary" type="submit">Seed Me</button>
+    </form>
+</div>
+
+{% endblock %}
+
+<p>/search/{{result['id']}}"</p>

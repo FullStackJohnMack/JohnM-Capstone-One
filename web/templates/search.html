@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+
+
+
+        {% for item in form if item.widget.input_type != 'hidden' %}
+            {{item}}{% if item.type != 'RadioField' %}{{item.label}}{% endif %}
+        
+            
+            
+            
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+    
+</div>
+
+{% endblock %}
