@@ -82,7 +82,26 @@ def show_recommendations():
         target_acousticness = 1
     else:
         target_acousticness = 0
+
+    if request.form.get('danceability'):
+        target_danceability = 1
+    else:
+        target_danceability = 0
     
+    if request.form.get('energy'):
+        target_energy = 1
+    else:
+        target_energy = 0
+
+    if request.form.get('instrumentalness'):
+        target_instrumentalness = 1
+    else:
+        target_instrumentalness = 0
+    
+    if request.form.get('liveness'):
+        target_liveness = 1
+    else:
+        target_liveness = 0
 
     headers = {'Authorization':'Bearer ' + session['token']}
     payload = {
@@ -90,6 +109,10 @@ def show_recommendations():
             'seed_tracks': seed_tracks,
             'seed_genres': seed_genre,
             'target_acousticness': target_acousticness,
+            'target_danceability': target_danceability,
+            'target_energy': target_energy,
+            'target_instrumentalness': target_instrumentalness,
+            'target_liveness': target_liveness,
             'limit': 100
         }
 

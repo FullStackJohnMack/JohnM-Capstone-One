@@ -7,6 +7,7 @@
 <div class="container">
     <form method="POST" action="search/seed">
 
+            <h3>Confirm your artists and songs:</h3>
             {% if seed_1_type == 'artists' %}
                 {% for result in seed_1_id[seed_1_type]['items'] %}
                     <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
@@ -67,8 +68,14 @@
                 {% endfor %}
             {% endif %}
 
-            <input type="checkbox" name="acousticness" value="1">Acousticness<br>
+            <hr>
+            
             <input type="checkbox" name="seed_genre" value="{{genre}}" checked >{{genre.capitalize()}}<br>
+            <input type="checkbox" name="acousticness" value="1">Acousticness?<br>
+            <input type="checkbox" name="danceability" value="1">Danceability?<br>
+            <input type="checkbox" name="energy" value="1">Energy?<br>
+            <input type="checkbox" name="instrumentalness" value="1">Instrumentalness?<br>
+            <input type="checkbox" name="liveness" value="1">Liveness?<br>
 
         <button class="btn btn-primary" type="submit">Seed Me</button>
     </form>
