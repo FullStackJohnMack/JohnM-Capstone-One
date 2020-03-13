@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+    <form method="POST" action="search/seed">
+            <h3>Seed Artists</h3>
+            {% for result in seed_1_id[seed_1_type]['items'] %}
+            <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+            {% endfor %}
+
+            <br>
+
+            <h3>Seed Tracks</h3>
+            {% for result in seed_2_id[seed_2_type]['items'] %}
+            <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+            {% endfor %}
+
+
+
+        
+
+        <button class="btn btn-primary" type="submit">Seed Me</button>
+    </form>
+</div>
+
+{% endblock %}
+
+<p>/search/{{result['id']}}"</p>
