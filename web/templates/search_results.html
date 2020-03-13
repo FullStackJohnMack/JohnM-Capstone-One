@@ -4,30 +4,74 @@
 
 {% block content %}
 
-
-
 <div class="container">
     <form method="POST" action="search/seed">
-            <h3>Seed Artists</h3>
-            {% for result in seed_1_id[seed_1_type]['items'] %}
-            <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
-            {% endfor %}
 
-            <br>
+            {% if seed_1_type == 'artists' %}
+                {% for result in seed_1_id[seed_1_type]['items'] %}
+                    <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+                {% endfor %}
+            {% endif %}
 
-            <h3>Seed Tracks</h3>
-            {% for result in seed_2_id[seed_2_type]['items'] %}
-            <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-            {% endfor %}
+            {% if seed_2_type == 'artists' %}
+                {% for result in seed_2_id[seed_2_type]['items'] %}
+                    <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+                {% endfor %}
+            {% endif %}
 
+            {% if seed_3_type == 'artists' %}
+                {% for result in seed_3_id[seed_3_type]['items'] %}
+                    <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+                {% endfor %}
+            {% endif %}
 
+            {% if seed_4_type == 'artists' %}
+                {% for result in seed_4_id[seed_4_type]['items'] %}
+                    <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+                {% endfor %}
+            {% endif %}
 
-        
+            {% if seed_5_type == 'artists' %}
+                {% for result in seed_5_id[seed_5_type]['items'] %}
+                    <input type="checkbox" name="seed_artists" value="{{result['id']}}">{{result['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if seed_1_type == 'tracks' %}
+                {% for result in seed_1_id[seed_1_type]['items'] %}
+                    <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if seed_2_type == 'tracks' %}
+                {% for result in seed_2_id[seed_2_type]['items'] %}
+                    <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if seed_3_type == 'tracks' %}
+                {% for result in seed_3_id[seed_3_type]['items'] %}
+                    <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if seed_4_type == 'tracks' %}
+                {% for result in seed_4_id[seed_4_type]['items'] %}
+                    <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if seed_5_type == 'tracks' %}
+                {% for result in seed_5_id[seed_5_type]['items'] %}
+                    <input type="checkbox" name="seed_tracks" value="{{result['id']}}">{{result['name']}} - {{result['artists'][0]['name']}}<br>
+                {% endfor %}
+            {% endif %}
+
+            <input type="checkbox" name="acousticness" value="1">Acousticness<br>
+            <input type="checkbox" name="seed_genre" value="{{genre}}" checked >{{genre.capitalize()}}<br>
 
         <button class="btn btn-primary" type="submit">Seed Me</button>
     </form>
 </div>
 
 {% endblock %}
-
-<p>/search/{{result['id']}}"</p>

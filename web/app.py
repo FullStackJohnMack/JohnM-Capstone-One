@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, session
 import requests, base64
 from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 from forms import SearchForm
-from utils import get_id
+from utils import get_id, get_genres
 
 app = Flask(__name__)
 app.secret_key = "password"
@@ -38,23 +38,25 @@ def search_spotify():
 
     form = SearchForm()
 
-    
+    form.genre.choices = [g for g in get_genres()]
 
     if form.validate_on_submit():
-        
+
         seed_1_id = get_id(form.input1.data, form.radio1.data)
         seed_2_id = get_id(form.input2.data, form.radio2.data)
-        # seed_3_id = get_id(form.input3.data, form.radio3.data)
-        # seed_4_id = get_id(form.input4.data, form.radio4.data)
-        # seed_5_id = get_id(form.input5.data, form.radio5.data)
+        seed_3_id = get_id(form.input3.data, form.radio3.data)
+        seed_4_id = get_id(form.input4.data, form.radio4.data)
+        seed_5_id = get_id(form.input5.data, form.radio5.data)
 
         seed_1_type = f'{form.radio1.data}s'
         seed_2_type = f'{form.radio2.data}s'
-        # seed_3_type = f'{form.radio3.data}s'
-        # seed_4_type = f'{form.radio4.data}s'
-        # seed_5_type = f'{form.radio5.data}s'
+        seed_3_type = f'{form.radio3.data}s'
+        seed_4_type = f'{form.radio4.data}s'
+        seed_5_type = f'{form.radio5.data}s'
 
-        return render_template("search_results.html", seed_1_id=seed_1_id, seed_1_type=seed_1_type, seed_2_id=seed_2_id, seed_2_type=seed_2_type)
+        genre = form.genre.data
+
+        return render_template("search_results.html", genre=genre,seed_1_id=seed_1_id, seed_1_type=seed_1_type, seed_2_id=seed_2_id, seed_2_type=seed_2_type, seed_3_id=seed_3_id, seed_3_type=seed_3_type,seed_4_id=seed_4_id, seed_4_type=seed_4_type,seed_5_id=seed_5_id, seed_5_type=seed_5_type)
 
     return render_template("search.html", form=form)
 
@@ -65,6 +67,7 @@ def show_recommendations():
 
     seed_artists = ""
     seed_tracks = ""
+    seed_genre = ""
     
     for id in request.form.getlist('seed_artists'):
         seed_artists += f"{id},"
@@ -72,23 +75,30 @@ def show_recommendations():
     for id in request.form.getlist('seed_tracks'):
         seed_tracks += f"{id},"
 
+    if request.form.get('seed_genre'):
+        seed_genre = request.form['seed_genre']
+
+    if request.form.get('acousticness'):
+        target_acousticness = 1
+    else:
+        target_acousticness = 0
+    
 
     headers = {'Authorization':'Bearer ' + session['token']}
     payload = {
             'seed_artists': seed_artists,
             'seed_tracks': seed_tracks,
+            'seed_genres': seed_genre,
+            'target_acousticness': target_acousticness,
             'limit': 100
         }
 
     resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
 
-    return render_template("seed_results.html", resp=resp, seed_artists=seed_artists, seed_tracks=seed_tracks)
+    return render_template("seed_results.html", resp=resp, seed_artists=seed_artists, seed_tracks=seed_tracks, seed_genre=seed_genre)
 
 
 
-
-# , seed_3_id=seed_3_id, seed_4_id=seed_4_id,seed_5_id=seed_5_id
-# , ,seed_3_type=seed_3_type, seed_4_type=seed_4_type,seed_5_type=seed_5_type
 
 
 

@@ -8,19 +8,15 @@
     <form method="POST">
         {{ form.hidden_tag() }}
 
-
-
-
         {% for item in form if item.widget.input_type != 'hidden' %}
-            {{item}}{% if item.type != 'RadioField' %}{{item.label}}{% endif %}
+            {{item}}{% if item.type != 'RadioField' %}{{item.label}}{% endif %}<br>
         
-            
-            
             
         {% endfor %}
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
     
 </div>
+
 
 {% endblock %}
