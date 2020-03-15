@@ -70,12 +70,74 @@
 
             <hr>
             
-            <input type="checkbox" name="seed_genre" value="{{genre}}" checked >{{genre.capitalize()}}<br>
-            <input type="checkbox" name="acousticness" value="1">Acousticness?<br>
-            <input type="checkbox" name="danceability" value="1">Danceability?<br>
-            <input type="checkbox" name="energy" value="1">Energy?<br>
-            <input type="checkbox" name="instrumentalness" value="1">Instrumentalness?<br>
-            <input type="checkbox" name="liveness" value="1">Liveness?<br>
+            
+            <div class="form-group form-check"><input type="checkbox" name="acousticness" value="1">Acousticness?</div>
+            <div class="form-group form-check"><input type="checkbox" name="danceability" value="1">Danceability?</div>
+            <div class="form-group form-check"><input type="checkbox" name="energy" value="1">Energy?</div>
+            <div class="form-group form-check"><input type="checkbox" name="instrumentalness" value="1">Instrumentalness?</div>
+            <div class="form-group form-check"><input type="checkbox" name="liveness" value="1">Liveness?</div>
+            <div class="form-group form-check"><input type="checkbox" name="speechiness" value="1">Speechiness?</div>
+            <div class="form-group form-check"><input type="checkbox" name="happy" value="1">Happy?</div>
+
+            <div class="form-group">        
+                <select name="seed_genre">
+                    {% for genre in genres %}
+                    <option value="{{genre[0]}}">{{genre[1]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        <div class="form-group">
+            <label for="duration">Minimum Duration (scale from 1 to 10 minutes):</label>
+            <input type="checkbox" name="include_min_duration" value="1">Include?
+            <input type="range" id="min_duration" name="min_duration" min="60000" max="600000" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Maximum Duration (scale from 1 to 10 minutes):</label>
+            <input type="checkbox" name="include_max_duration" value="1">Include?
+            <input type="range" id="max_duration" name="max_duration" min="60000" max="600000" class="form-control">
+        </div>
+
+        <div class="form-group">        
+            <select name="key">
+                {% for key in keys %}
+                <option value="{{key[0]}}">{{key[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Loudness:</label>
+            <input type="checkbox" name="include_loudness" value="1">Include?
+            <input type="range" id="loudness" name="loudness" min="-60" max="0" class="form-control">
+        </div>
+
+        <div class="form-group">        
+            <select name="mode">
+                {% for mode in modes %}
+                <option value="{{mode[0]}}">{{mode[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Popularity:</label>
+            <input type="checkbox" name="include_popularity" value="1">Include?
+            <input type="range" id="popularity" name="popularity" min="0" max="100" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Target Tempo (beats per minute):</label>
+            <input type="checkbox" name="include_tempo" value="1">Include?
+            <input type="range" id="tempo" name="tempo" min="0" max="300" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="time_sig">Time Signature (beats per measure):</label>
+            <input type="checkbox" name="include_time_sig" value="1">Include?
+            <input type="range" id="tempo" name="time_sig" min="2" max="12" class="form-control">
+        </div>
 
         <button class="btn btn-primary" type="submit">Seed Me</button>
     </form>
