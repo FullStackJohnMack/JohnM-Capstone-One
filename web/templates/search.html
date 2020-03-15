@@ -4,19 +4,33 @@
 
 {% block content %}
 
-<div class="container">
+
+
+    <h4>Seed Spotify is a better way to discover the music you <i>really</i> want to listen to on Spotify.</h4>
+    <p>There are two pages of "seeding inputs." A seed is just one way to get the Spotify recommendation engine pointed in a particular direction.</p>
+    <p>This page allows you to search for up to five artists or specific songs. On the next page, you'll see the results from this search (so you can choose the exact band or song you were searching for). You'll also find several niche seed inputs on the next page like "acousticness" and "energy."</p>
+
     <form method="POST">
         {{ form.hidden_tag() }}
 
         {% for item in form if item.widget.input_type != 'hidden' %}
-            {{item}}{% if item.type != 'RadioField' %}{{item.label}}{% endif %}<br>
-        
             
+                {% if item.type == 'RadioField' %}
+                <div class="form-check form-check-inline">
+                    {{item (class_="form-check-input list-unstyled")}}
+                </div>
+                
+                {% else%}
+                    {{item (class_="form-control")}}
+                {% endif %}        
+        
         {% endfor %}
-        <button class="btn btn-primary" type="submit">Submit</button>
+        
+        <br>
+
+        <button class="btn btn-success" type="submit">Submit</button>
     </form>
-    
-</div>
+
 
 
 {% endblock %}
