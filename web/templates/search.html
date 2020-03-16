@@ -1,36 +1,126 @@
 {% extends "base.html" %}
 
-{% block title %}Search{% endblock %}
+{% block title %}Results{% endblock %}
 
 {% block content %}
 
-
-
-    <h4>Seed Spotify is a better way to discover the music you <i>really</i> want to listen to on Spotify.</h4>
-    <p>There are two pages of "seeding inputs." A seed is just one way to get the Spotify recommendation engine pointed in a particular direction.</p>
-    <p>This page allows you to search for up to five artists or specific songs. On the next page, you'll see the results from this search (so you can choose the exact band or song you were searching for). You'll also find several niche seed inputs on the next page like "acousticness" and "energy."</p>
-
-    <form method="POST">
-        {{ form.hidden_tag() }}
-
-        {% for item in form if item.widget.input_type != 'hidden' %}
-            
-                {% if item.type == 'RadioField' %}
-                <div class="form-check form-check-inline">
-                    {{item (class_="form-check-input list-unstyled")}}
-                </div>
-                
-                {% else%}
-                    {{item (class_="form-control")}}
-                {% endif %}        
+    <form id="artist_search">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input class="form-control" id="input1" name="input1" placeholder="Optional artist or song" type="text">
+        <label>
+            <input name="radio1" type="radio" value="artist">
+            Artist
+        </label>
         
-        {% endfor %}
-        
+        <label>
+            <input name="radio1" type="radio" value="track">
+            Song
+        </label>
         <br>
-
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button id="artist_search_button" class="btn btn-success">Search</button>
     </form>
 
+    <form method="POST" action="seed" id="search_form">
+        <hr>
+
+        <div id ="artist_search_results">  
+
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <h4>You can seed by music genre and any of the artists or songs you searched for.</h4>
+        <h6>You can select <b>up to five seeds from genre, artist, or song.</b></h6> 
+
+        <div class="form-group">      
+            <select name="seed_genre" id ="seed_genre" class="form-control">
+                {% for genre in genres %}
+                <option value="{{genre[0]}}">{{genre[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+        
+        <hr>
+
+        <h4>Any of the seed inputs below look at individual songs and must be used in conjuntion with <i>at least one artist, song, or genre.</i></h4>
+
+        <div class="form-group form-check"><input type="checkbox" name="acousticness" value="1" class="form-check-input">Do you want more acoustic songs?</div>
+        <div class="form-group form-check"><input type="checkbox" name="danceability" value="1" class="form-check-input">Do you want more music to dance to?</div>
+        <div class="form-group form-check"><input type="checkbox" name="energy" value="1" class="form-check-input">Do you want more energetic music?</div>
+        <div class="form-group form-check"><input type="checkbox" name="instrumentalness" value="1" class="form-check-input">Do you want more instrumental songs?</div>
+        <div class="form-group form-check"><input type="checkbox" name="liveness" value="1" class="form-check-input">Do you want more songs that are performed live?</div>
+        <div class="form-group form-check"><input type="checkbox" name="speechiness" value="1" class="form-check-input">Do you want music with more speaking than singing?</div>
+        <div class="form-group form-check"><input type="checkbox" name="happy" value="1" class="form-check-input">Do you want extra happy sounding music?</div>
+        
+        <hr>
+
+        <div class="form-group">
+            <label for="loudness" class="form-check-label">Loudness:</label>
+            <input type="checkbox" name="include_loudness" value="1" class="form-check-inline">Include?
+            <input type="range" id="loudness" name="loudness" min="-60" max="0" class="form-control">
+        </div>
+       
+            
+        <div class="form-group">
+            <label for="popularity" class="form-check-label">Popularity:</label>
+            <input type="checkbox" name="include_popularity" value="1" class="form-check-inline">Include?
+            <input type="range" id="popularity" name="popularity" min="0" max="100" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="tempo" class="form-check-label">Target Tempo (beats per minute from 0-300):</label>
+            <input type="checkbox" name="include_tempo" value="1" class="form-check-inline">Include?
+            <input type="range" id="tempo" name="tempo" min="0" max="300" class="form-control">
+        </div>
+
+    
+        <div class="form-group">
+            <label for="time_sig" class="form-check-label">Time Signature (beats per measure from 2-12):</label>
+            <input type="checkbox" name="include_time_sig" value="1" class="form-check-inline">Include?
+            <input type="range" id="time_sig" name="time_sig" min="2" max="12" class="form-control">
+        </div>
+
+        <hr>
+
+        <h4>You can search by length.</h4>   
+        <div class="form-group">
+            <label for="min_duration" class="form-check-label">Minimum Duration (from 1 to 10 minutes):</label>
+            <input type="checkbox" name="include_min_duration" value="1" class="form-check-inline">Include?
+            <input type="range" id="min_duration" name="min_duration" min="60000" max="600000" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="max_duration" class="form-check-label">Maximum Duration (from 1 to 10 minutes):</label>
+            <input type="checkbox" name="include_max_duration" value="1" class="form-check-inline">Include?
+            <input type="range" id="max_duration" name="max_duration" min="60000" max="600000" class="form-control">
+        </div>
+
+        <hr>
+
+        <h4>You can search by musical key.</h4>   
+        <div class="form-group">        
+            <select name="key">
+                {% for key in keys %}
+                <option value="{{key[0]}}">{{key[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <hr>
+        
+        <h4>You can search by major or minor key.</h4>  
+        <div class="form-group">        
+            <select name="mode">
+                {% for mode in modes %}
+                <option value="{{mode[0]}}">{{mode[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Seed Me</button>
+    </form>
 
 
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Results 1{% endblock %}
+
+{% block content %}
+
+<h1>Results 1</h1>
+
+{{results}}
+
+
+<iframe src="https://open.spotify.com/embed/playlist/{{playlist_id}}" width="400px" height="500px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
+<a href="/delete" name="unfollow_playlist" class="btn btn-danger">Delete Playlist</a>
+
+{% endblock %}

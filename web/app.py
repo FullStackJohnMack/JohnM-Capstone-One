@@ -2,8 +2,9 @@ from flask import Flask, render_template, redirect, request, session
 import requests, base64
 from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SECRET_KEY
 from forms import SearchForm
-from utils import get_id, get_genres, get_key_list, get_modes
+from utils import get_id, get_genres, get_key_list, get_modes, get_user_id, create_playlist, add_songs_to_playlist, delete_playlist
 from flask_wtf.csrf import CSRFProtect
+import pdb
 
 csrf = CSRFProtect()
 
@@ -41,42 +42,34 @@ def get_spotify_auth():
     refresh_token = resp['refresh_token']
     session['token'] = token
     session['refresh_token'] = refresh_token
-    return redirect('/search')
+    session['user_id'] = get_user_id()
+    return redirect('/playground')
 
-@app.route("/search", methods=["GET", "POST"])
-def search_spotify():
+@app.route("/playground")
+def go_to_search_page():
     """"""
+    genres = get_genres()
+    keys = get_key_list()
+    modes = get_modes()
 
-    form = SearchForm()
-
-    if form.validate_on_submit():
-
-        seed_1_id = get_id(form.input1.data, form.radio1.data)
-        seed_2_id = get_id(form.input2.data, form.radio2.data)
-        seed_3_id = get_id(form.input3.data, form.radio3.data)
-        seed_4_id = get_id(form.input4.data, form.radio4.data)
-        seed_5_id = get_id(form.input5.data, form.radio5.data)
-
-        seed_1_type = f'{form.radio1.data}s'
-        seed_2_type = f'{form.radio2.data}s'
-        seed_3_type = f'{form.radio3.data}s'
-        seed_4_type = f'{form.radio4.data}s'
-        seed_5_type = f'{form.radio5.data}s'
-
-        genres = get_genres()
-        keys = get_key_list()
-        modes = get_modes()
-
-        return render_template("search_results.html", genres=genres, keys=keys, modes=modes, seed_1_id=seed_1_id, seed_1_type=seed_1_type, seed_2_id=seed_2_id, seed_2_type=seed_2_type, seed_3_id=seed_3_id, seed_3_type=seed_3_type,seed_4_id=seed_4_id, seed_4_type=seed_4_type,seed_5_id=seed_5_id, seed_5_type=seed_5_type)
-
-    return render_template("search.html", form=form)
+    return render_template("search.html", genres=genres, keys=keys, modes=modes)
 
 
-@app.route("/search/seed", methods=['POST'])
+@app.route("/search", methods=["GET"])
+def artist_or_track_search():
+    """API endpoint that accepts an artist or track query and type (artist or track) and returns a list of tuples with Spotify ID and artist or track name. [("Uesfsz...dsd","artist"),("TDSdsd...dfd","track")]"""
+
+    artist = request.args.get('q')
+    type = request.args.get('type')
+    
+    resp = get_id(artist,type)
+
+    return resp
+
+
+@app.route("/seed", methods=['POST'])
 def show_recommendations():
     """"""
-
-
 
     headers = {'Authorization':'Bearer ' + session['token']}
     
@@ -84,12 +77,13 @@ def show_recommendations():
 
         }
 
-    if request.form.get('seed_artists'):
-        artist_list = [f'{artist},' for artist in request.form.getlist('seed_artists')];
+    if request.form.get('artist'):
+        artist_list = [f'{artist},' for artist in request.form.getlist('artist')];
         payload['seed_artists'] = artist_list
 
-    for id in request.form.getlist('seed_tracks'):
-        payload['seed_tracks'] += f"{id},"
+    for id in request.form.getlist('track'):
+        track_list = [f'{track},' for track in request.form.getlist('track')];
+        payload['seed_tracks'] = track_list
 
     if request.form.get('seed_genre'):
         payload['seed_genres'] = request.form.get('seed_genre')
@@ -139,12 +133,32 @@ def show_recommendations():
     if request.form.get('include_time_sig'):
         payload['target_time_signature'] = int(request.form.get('time_sig'))
 
+   
 
     resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
+    
+    track_list = []
 
-    return render_template("seed_results.html", resp=resp)
+    
+    final = ""
+
+    for track_uri in resp['tracks']:
+        final += track_uri['uri']+','
+
+
+    session['playlist_id'] = create_playlist(session['user_id'])
+    add_songs_to_playlist(session['playlist_id'], final)
+
+    return render_template("results.html", resp=resp, playlist_id=session['playlist_id'])
+
+
+@app.route("/delete", methods=["GET"])
+def unfollow_playlist():
+    """"""
+    
+    delete_playlist(session['playlist_id'])
+
+    return redirect('/playground')
 
 
 
-# https://api.spotify.com/v1/recommendations
-# http://127.0.0.1:5000

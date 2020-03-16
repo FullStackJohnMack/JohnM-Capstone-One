@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, render_template, redirect, request, session, jsonify
 import requests
 
 def get_id(input_name, input_type):
@@ -7,10 +7,15 @@ def get_id(input_name, input_type):
     headers = {'Authorization':'Bearer ' + session['token']}
     payload = {
         'q': input_name,
-        'type': input_type
+        'type': input_type,
+        'limit': 5
     }
 
-    return requests.get('https://api.spotify.com/v1/search', params=payload, headers=headers).json()
+    resp = requests.get('https://api.spotify.com/v1/search', params=payload, headers=headers).json()
+
+    resp['input_type'] = input_type
+
+    return resp
 
 def get_genres():
     """"""
@@ -31,4 +36,48 @@ def get_modes():
     """"""
     keys = [('','Select Major or Minor Key'),('0','Minor'),('1','Major')]
     return keys
+
+def get_user_id():
+    """"""
+    headers = {'Authorization':'Bearer ' + session['token']}
+    raw = requests.get('https://api.spotify.com/v1/me', headers=headers).json()
+    return raw['id']
+
+def create_playlist(user_id):
+    """"""
+    headers = {
+        'Authorization':'Bearer ' + session['token'],
+        'Content-Type':'application/json'
+        }
+
+    data = '{"name": "My Playlist","public":false}'
+
+    raw = requests.post(f'https://api.spotify.com/v1/users/{user_id}/playlists', headers=headers, data=data).json()
+
+    return raw['id']
+
+def add_songs_to_playlist(playlist_id, track_list):
+    """"""
+    headers = {
+        'Authorization':'Bearer ' + session['token'],
+        'Content-Type':'application/json'
+        }
+
+    params = {'uris':track_list}
+
+    raw = requests.post(f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks', headers=headers, params=params).json()
+
+    return raw
+
+def delete_playlist(playlist_id):
+    """"""
+    headers = {
+        'Authorization':'Bearer ' + session['token'],
+        'Content-Type':'application/json'
+        }
+
+    raw = requests.delete(f'https://api.spotify.com/v1/playlists/{playlist_id}/followers', headers=headers)
+
+    return raw
+
 
