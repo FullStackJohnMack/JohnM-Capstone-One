@@ -49,114 +49,31 @@ async function getId (inputName, inputType) {
     return resp
 }
 
-/* <ul>
-    {% for result in resp['tracks'] %}
-        <li><a href="{{result['external_urls']['spotify']}}" target="blank">{{result['artists'][0].name}} - {{result.name}}</a></li>
-    {% endfor %}
-</ul> */
+
+// {% for song in song_list %}
+// <div class="container">
+//     <iframe src="https://open.spotify.com/embed/track/{{song}}" width="400px" height="100px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+// </div>
+// {% endfor %}
+
+// 'Content-Type':'application/x-www-form-urlencoded'
 
 
-/* <div class="form-group">  
-{% if seed_1_type == 'artists' %}
-    {% for result in seed_1_id[seed_1_type]['items'] %}
-        <input type="checkbox" name="seed_artists" value="{{result['id']}}" class="form-check-input">{{result['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_2_type == 'artists' %}
-    {% for result in seed_2_id[seed_2_type]['items'] %}
-        <input type="checkbox" name="seed_artists" value="{{result['id']}}" class="form-check-input">{{result['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_3_type == 'artists' %}
-    {% for result in seed_3_id[seed_3_type]['items'] %}
-        <input type="checkbox" name="seed_artists" value="{{result['id']}}" class="form-check-input">{{result['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_4_type == 'artists' %}
-    {% for result in seed_4_id[seed_4_type]['items'] %}
-        <input type="checkbox" name="seed_artists" value="{{result['id']}}" class="form-check-input">{{result['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_5_type == 'artists' %}
-    {% for result in seed_5_id[seed_5_type]['items'] %}
-        <input type="checkbox" name="seed_artists" value="{{result['id']}}" class="form-check-input">{{result['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_1_type == 'tracks' %}
-    {% for result in seed_1_id[seed_1_type]['items'] %}
-        <input type="checkbox" name="seed_tracks" value="{{result['id']}}" class="form-check-input">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_2_type == 'tracks' %}
-    {% for result in seed_2_id[seed_2_type]['items'] %}
-        <input type="checkbox" name="seed_tracks" value="{{result['id']}}" class="form-check-input">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_3_type == 'tracks' %}
-    {% for result in seed_3_id[seed_3_type]['items'] %}
-        <input type="checkbox" name="seed_tracks" value="{{result['id']}}" class="form-check-input">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_4_type == 'tracks' %}
-    {% for result in seed_4_id[seed_4_type]['items'] %}
-        <input type="checkbox" name="seed_tracks" value="{{result['id']}}" class="form-check-input">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div>
-
-<div class="form-group">  
-{% if seed_5_type == 'tracks' %}
-    {% for result in seed_5_id[seed_5_type]['items'] %}
-        <input type="checkbox" name="seed_tracks" value="{{result['id']}}" class="form-check-input">{{result['name']}} - {{result['artists'][0]['name']}}<br>
-    {% endfor %}
-{% endif %}
-</div> */}
-// genres = get_genres()
-//         keys = get_key_list()
-//         modes = get_modes()
-
-// seed_2_type = f'{form.radio2.data}s'
-// seed_3_type = f'{form.radio3.data}s'
-// seed_4_type = f'{form.radio4.data}s'
-// seed_5_type = f'{form.radio5.data}s'
-
-// seed_2_id = get_id(form.input2.data, form.radio2.data)
-// seed_3_id = get_id(form.input3.data, form.radio3.data)
-// seed_4_id = get_id(form.input4.data, form.radio4.data)
-// seed_5_id = get_id(form.input5.data, form.radio5.data)
-
-
-// def get_id(input_name, input_type):
+// @app.route("/user_auth")
+// def get_spotify_auth():
 //     """"""
-
-//     headers = {'Authorization':'Bearer ' + session['token']}
-//     payload = {
-//         'q': input_name,
-//         'type': input_type
-//     }
-
-//     return requests.get('https://api.spotify.com/v1/search', params=payload, headers=headers).json()
+//     code = request.args.get('code')
+//     resp = requests.post('https://accounts.spotify.com/api/token', 
+//         data ={
+//             "grant_type": "authorization_code",
+//             "code": code,
+//             "redirect_uri": "http://localhost:5000/auth",
+//             "client_id": CLIENT_ID,
+//             "client_secret": CLIENT_SECRET
+//         }).json()
+//     token = resp['access_token']
+//     refresh_token = resp['refresh_token']
+//     session['token'] = token
+//     session['refresh_token'] = refresh_token
+//     session['user_id'] = get_user_id()
+//     return redirect('/playground')

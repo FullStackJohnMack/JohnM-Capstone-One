@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, request, session
 import requests, base64
-from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SECRET_KEY
+from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SECRET_KEY, B64_CODE
 from forms import SearchForm
 from utils import get_id, get_genres, get_key_list, get_modes, get_user_id, create_playlist, add_songs_to_playlist, delete_playlist
 from flask_wtf.csrf import CSRFProtect
@@ -23,26 +23,30 @@ def log_request_info():
 def get_homepage():
     """Show homepage."""
 
+    
+
     return render_template("index.html")
 
 
-@app.route("/spotify/auth")
+@app.route("/auth")
 def get_spotify_auth():
     """"""
-    code = request.args.get('code')
-    resp = requests.post('https://accounts.spotify.com/api/token', 
-        data ={
-            "grant_type": "authorization_code",
-            "code": code,
-            "redirect_uri": "http://localhost:5000/spotify/auth",
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET
-        }).json()
+
+    headers = {
+        'Authorization':'Basic {}'.format(B64_CODE)
+    }
+
+    print(headers)
+
+    data = {
+        'grant_type': 'client_credentials'
+    }
+
+    resp = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data).json()
+ 
     token = resp['access_token']
-    refresh_token = resp['refresh_token']
     session['token'] = token
-    session['refresh_token'] = refresh_token
-    session['user_id'] = get_user_id()
+    
     return redirect('/playground')
 
 @app.route("/playground")
@@ -139,17 +143,15 @@ def show_recommendations():
     
     track_list = []
 
-    
-    final = ""
 
-    for track_uri in resp['tracks']:
-        final += track_uri['uri']+','
+    for track in resp['tracks']:
+        track_list.append(track['id'])
 
 
-    session['playlist_id'] = create_playlist(session['user_id'])
-    add_songs_to_playlist(session['playlist_id'], final)
+    # session['playlist_id'] = create_playlist(session['user_id'])
+    # add_songs_to_playlist(session['playlist_id'], final)
 
-    return render_template("results.html", resp=resp, playlist_id=session['playlist_id'])
+    return render_template("results.html", resp=resp, track_list=track_list)
 
 
 @app.route("/delete", methods=["GET"])
@@ -161,4 +163,25 @@ def unfollow_playlist():
     return redirect('/playground')
 
 
+# playlist_id=session['playlist_id']
+
+
+# @app.route("/user_auth")
+# def get_spotify_user_auth():
+#     """"""
+#     code = request.args.get('code')
+#     resp = requests.post('https://accounts.spotify.com/api/token', 
+#         data ={
+#             "grant_type": "authorization_code",
+#             "code": code,
+#             "redirect_uri": "http://localhost:5000/user_auth",
+#             "client_id": CLIENT_ID,
+#             "client_secret": CLIENT_SECRET
+#         }).json()
+#     token = resp['access_token']
+#     refresh_token = resp['refresh_token']
+#     session['token'] = token
+#     session['refresh_token'] = refresh_token
+#     session['user_id'] = get_user_id()
+#     return redirect('/seed')
 

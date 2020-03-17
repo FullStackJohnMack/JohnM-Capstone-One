@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, jsonify
+from access import CLIENT_ID, CLIENT_SECRET
 import requests
-
+import base64
 def get_id(input_name, input_type):
     """"""
 
@@ -79,5 +80,3 @@ def delete_playlist(playlist_id):
     raw = requests.delete(f'https://api.spotify.com/v1/playlists/{playlist_id}/followers', headers=headers)
 
     return raw
-
-

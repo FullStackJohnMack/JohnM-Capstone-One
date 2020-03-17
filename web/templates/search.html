@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Results{% endblock %}
+{% block title %}Spotify Recommendation Playground{% endblock %}
 
 {% block content %}
+<h4>Search for artists or songs here and add them to your seed choices below.</h4>
 
     <form id="artist_search">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -17,7 +18,7 @@
             Song
         </label>
         <br>
-        <button id="artist_search_button" class="btn btn-success">Search</button>
+        <button id="artist_search_button" class="btn btn-success">Add</button>
     </form>
 
     <form method="POST" action="seed" id="search_form">
@@ -119,7 +120,7 @@
             </select>
         </div>
 
-        <button class="btn btn-primary" type="submit">Seed Me</button>
+        <button class="btn btn-success" type="submit">Search</button>
     </form>
 
 
