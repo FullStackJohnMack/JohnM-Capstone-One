@@ -8,11 +8,11 @@ $artist_search_button.on("click", async function (evt) {
         
 
     const seed_id = await getId($('#input1').val(), $("input[name='radio1']:checked").val()) 
-    // $artist_search_results.append(seed_id.data.artists.items[0].id);
+
 
     if (seed_id.data.input_type == 'artist') {
         for (result of seed_id.data.artists.items) {
-            link = `<input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name}<br>`
+            link = `<label class="btn btn-outline-success btn-sm m-2"><input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name}</label>`
             $artist_search_results.append(link)
         }
         console.log("artist added")
@@ -21,7 +21,7 @@ $artist_search_button.on("click", async function (evt) {
     if (seed_id.data.input_type == 'track') {
         for (result of seed_id.data.tracks.items) {
 
-            link = `<input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name} - ${result.artists[0].name}<br>`
+            link = `<label class="btn btn-outline-success btn-sm m-2"><input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name} - ${result.artists[0].name}</label>`
             $artist_search_results.append(link)
         }
         console.log("track added")
@@ -77,3 +77,9 @@ async function getId (inputName, inputType) {
 //     session['refresh_token'] = refresh_token
 //     session['user_id'] = get_user_id()
 //     return redirect('/playground')
+
+// <ul>
+//     {% for result in resp['tracks'] %}
+//         <li><a href="{{result['external_urls']['spotify']}}" target="blank">{{result['artists'][0].name}} - {{result.name}}</a></li>
+//     {% endfor %}
+// </ul>

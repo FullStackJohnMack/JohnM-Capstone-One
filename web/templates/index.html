@@ -4,11 +4,31 @@
 
 {% block content %}
 
-    <h1>Welcome to the Spotify Recommendation Playground</h1>
-    <p>This app requires you to login to Spotify and grant permission to allow this app to modify your playlists. We will only create and remove playlists from your Spotify account as you direct. No functionaility in this app alters any other Spotify data.</p>
-    <a class="btn btn-success" href="/auth">No Playlists</a>
+    <h3 class="my-4">How do you want to use the Spotify Playground?</h3>
+    
+    <div class="card my-4 shadow">
+        <h5 class="card-header">Anonymously</h5>
+        <div class="card-body">
+        <ul>
+            <li>You'll be able to play with our search</li>
+            <li>Nothing you disocver will be saved</li>
+        </ul>
+        <a class="btn btn-primary" href="/auth">Start Search</a>
+        </div>
+    </div>
 
-    <a href="https://accounts.spotify.com/authorize?client_id=8aee06a9d32647a698e052031bd05312&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fuser_auth&scope=playlist-modify-public%20playlist-modify-private" class="btn btn-success">I Want Playlists</a>
+    <div class="card mt-5 shadow">
+        <h5 class="card-header">Linked to your Spotify</h5>
+        <div class="card-body">
+        <ul>
+            <li>You'll be able to play with our search</li>
+            <li>The music you find <i><b>will be added as a playlist on your Spotify account</i></b> unless you don't want to keep that playlist</li>
+        </ul>
+        <a href="https://accounts.spotify.com/authorize?client_id=8aee06a9d32647a698e052031bd05312&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fuser_auth&scope=playlist-modify-public%20playlist-modify-private" class="btn btn-success">Link and Search</a>
+        </div>
+    </div>
+
+
 
 
 {% endblock %}

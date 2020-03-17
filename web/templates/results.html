@@ -1,29 +1,28 @@
 {% extends "base.html" %}
-
 {% block title %}Results{% endblock %}
-
 {% block content %}
 
-<h6>Clicking on these links will open them in Spotify. You can log in to Spotify in your own client or using our link.</h6>
 
+    {% if playlist_id != None %}
+        <div class="card mt-4 shadow">
+            <h5 class="card-header">Search Results</h5>
+            <div class="card-body">
+                <iframe src="https://open.spotify.com/embed/playlist/{{playlist_id}}" width="100%" height="500px" frameborder="1" allowtransparency="true" allow="encrypted-media"></iframe>
+            </div>
+        </div>
+    {% endif %}
 
-<ul>
-    {% for result in resp['tracks'] %}
-        <li><a href="{{result['external_urls']['spotify']}}" target="blank">{{result['artists'][0].name}} - {{result.name}}</a></li>
-    {% endfor %}
-</ul>
-
-<div class="container">
-    <iframe src="https://open.spotify.com/embed/playlist/{{playlist_id}}" width="400px" height="500px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-</div>
-
-{% for track in track_id_list %}
-    <div class="container">
-        <iframe src="https://open.spotify.com/embed/track/{{track}}" width="400px" height="100px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    </div>
-{% endfor %}
-
-
-
+    {% if playlist_id == None %}
+        <div class="card mt-4 shadow">
+            <h5 class="card-header">Search Results</h5>
+            <div class="card-body">
+                {% for track in track_id_list %}
+                    <div class="container">
+                        <iframe src="https://open.spotify.com/embed/track/{{track}}" width="100%" height="100px" frameborder="1" allowtransparency="true" allow="encrypted-media"></iframe>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 
 {% endblock %}

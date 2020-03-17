@@ -32,6 +32,8 @@ def get_homepage():
 def get_spotify_auth():
     """"""
 
+    session.clear()
+
     headers = {
         'Authorization':'Basic {}'.format(B64_CODE)
     }
@@ -149,11 +151,14 @@ def show_recommendations():
     for track_uri in resp['tracks']:
         track_uris += track_uri['uri']+','
 
-    if session['user_id']:
+    playlist_id = None
+
+    if session.get('user_id'):
         session['playlist_id'] = create_playlist(session['user_id'])
+        playlist_id = session['playlist_id']
         add_songs_to_playlist(session['playlist_id'], track_uris)
 
-    return render_template("results.html", resp=resp, track_id_list=track_id_list, playlist_id=session['playlist_id'])
+    return render_template("results.html", resp=resp, track_id_list=track_id_list, playlist_id=playlist_id)
 
 
 @app.route("/delete", methods=["GET"])
@@ -163,6 +168,13 @@ def unfollow_playlist():
     delete_playlist(session['playlist_id'])
 
     return redirect('/playground')
+
+@app.route("/logout")
+def logout_user():
+    """"""
+    session.clear()
+
+    return redirect('/')
 
 
 # playlist_id=session['playlist_id']

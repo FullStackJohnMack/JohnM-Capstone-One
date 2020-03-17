@@ -11,7 +11,7 @@ def get_id(input_name, input_type):
     payload = {
         'q': input_name,
         'type': input_type,
-        'limit': 5
+        'limit': 10
     }
 
     resp = requests.get('https://api.spotify.com/v1/search', params=payload, headers=headers).json()
