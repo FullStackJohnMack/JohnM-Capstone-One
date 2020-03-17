@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, request, session, jsonify
 from access import CLIENT_ID, CLIENT_SECRET
 import requests
 import base64
+import pdb
+
 def get_id(input_name, input_type):
     """"""
 

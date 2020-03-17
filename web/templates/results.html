@@ -5,7 +5,6 @@
 {% block content %}
 
 <h6>Clicking on these links will open them in Spotify. You can log in to Spotify in your own client or using our link.</h6>
-<a href="https://accounts.spotify.com/authorize?client_id=8aee06a9d32647a698e052031bd05312&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fuser_auth&response_type=code&playlist-modify-public" class="btn btn-success">Login to Spotify</a>
 
 
 <ul>
@@ -14,11 +13,14 @@
     {% endfor %}
 </ul>
 
- {% for track in track_list %}
- <div class="container">
+<div class="container">
+    <iframe src="https://open.spotify.com/embed/playlist/{{playlist_id}}" width="400px" height="500px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+</div>
 
-     <iframe src="https://open.spotify.com/embed/track/{{track}}" width="400px" height="100px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
- </div>
+{% for track in track_id_list %}
+    <div class="container">
+        <iframe src="https://open.spotify.com/embed/track/{{track}}" width="400px" height="100px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    </div>
 {% endfor %}
 
 

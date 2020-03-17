@@ -141,17 +141,19 @@ def show_recommendations():
 
     resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
     
-    track_list = []
-
-
+    track_id_list = []
     for track in resp['tracks']:
-        track_list.append(track['id'])
+        track_id_list.append(track['id'])
 
+    track_uris = ""
+    for track_uri in resp['tracks']:
+        track_uris += track_uri['uri']+','
 
-    # session['playlist_id'] = create_playlist(session['user_id'])
-    # add_songs_to_playlist(session['playlist_id'], final)
+    if session['user_id']:
+        session['playlist_id'] = create_playlist(session['user_id'])
+        add_songs_to_playlist(session['playlist_id'], track_uris)
 
-    return render_template("results.html", resp=resp, track_list=track_list)
+    return render_template("results.html", resp=resp, track_id_list=track_id_list, playlist_id=session['playlist_id'])
 
 
 @app.route("/delete", methods=["GET"])
@@ -166,22 +168,27 @@ def unfollow_playlist():
 # playlist_id=session['playlist_id']
 
 
-# @app.route("/user_auth")
-# def get_spotify_user_auth():
-#     """"""
-#     code = request.args.get('code')
-#     resp = requests.post('https://accounts.spotify.com/api/token', 
-#         data ={
-#             "grant_type": "authorization_code",
-#             "code": code,
-#             "redirect_uri": "http://localhost:5000/user_auth",
-#             "client_id": CLIENT_ID,
-#             "client_secret": CLIENT_SECRET
-#         }).json()
-#     token = resp['access_token']
-#     refresh_token = resp['refresh_token']
-#     session['token'] = token
-#     session['refresh_token'] = refresh_token
-#     session['user_id'] = get_user_id()
-#     return redirect('/seed')
+@app.route("/user_auth", methods=["GET"])
+def get_spotify_user_auth():
+    """"""
+    session.pop('token', None)
+    session.pop('refresh_token', None)
+    session.pop('user_id', None)
+
+    code = request.args.get('code')
+    resp = requests.post('https://accounts.spotify.com/api/token', 
+        data ={
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": "http://localhost:5000/user_auth",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET
+        }).json()
+    token = resp['access_token']
+    refresh_token = resp['refresh_token']
+    session['token'] = token
+    session['refresh_token'] = refresh_token
+    session['user_id'] = get_user_id()
+
+    return redirect('/playground')
 
