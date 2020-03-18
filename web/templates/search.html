@@ -9,11 +9,15 @@
     <div class="card-body">
         <ul>
             <li>Include at least one artist, song, or genre in every Playground search</li>
-            <li>Choose up to five artists, songs, or genre (in any combination) in a Playground search</li>
+            <li>Choose <b>up to five artists, songs, or genre</b> (in any combination) in a Playground search</li>
             <li>Everything else is optional</li>
         </ul>
     </div>
 </div>
+
+{% if message %}
+    <div id="radio_alert" class="alert alert-danger mt-4" role="alert">{{ message }}</div>
+{% endif %}
 
 <div class="card mb-4">
     <h5 class="card-header">Search for artists or songs here (OPTIONAL)</h5>

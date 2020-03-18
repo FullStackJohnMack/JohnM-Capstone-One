@@ -1,9 +1,9 @@
 from flask import Flask, render_template, redirect, request, session
-import requests, base64
+import requests
 from access import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SECRET_KEY, B64_CODE
 from forms import SearchForm
 from utils import get_id, get_genres, get_key_list, get_modes, get_user_id, create_playlist, add_songs_to_playlist, delete_playlist
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, CSRFError
 import pdb
 
 csrf = CSRFProtect()
@@ -13,17 +13,14 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 csrf.init_app(app)
 
-@app.before_request
-def log_request_info():
-    app.logger.debug('Headers: %s', request.headers)
-    app.logger.debug('Body: %s', request.get_data())
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return redirect('/')
     
 
 @app.route("/")
 def get_homepage():
     """Show homepage."""
-
-    
 
     return render_template("index.html")
 
@@ -54,11 +51,15 @@ def get_spotify_auth():
 @app.route("/playground")
 def go_to_search_page():
     """"""
-    genres = get_genres()
-    keys = get_key_list()
-    modes = get_modes()
 
-    return render_template("search.html", genres=genres, keys=keys, modes=modes)
+    try:
+        genres = get_genres()
+        keys = get_key_list()
+        modes = get_modes()
+        return render_template("search.html", genres=genres, keys=keys, modes=modes)
+    
+    except KeyError:
+        return redirect('/auth')
 
 
 @app.route("/search", methods=["GET"])
@@ -71,103 +72,118 @@ def artist_or_track_search():
     resp = get_id(artist,type)
 
     return resp
+    
 
 
 @app.route("/seed", methods=['POST'])
 def show_recommendations():
     """"""
 
-    headers = {'Authorization':'Bearer ' + session['token']}
+    try:
+
+        headers = {'Authorization':'Bearer ' + session['token']}
+        
+        payload = {
+
+            }
+
+        if request.form.get('artist'):
+            artist_list = [f'{artist},' for artist in request.form.getlist('artist')];
+            payload['seed_artists'] = artist_list
+
+        for id in request.form.getlist('track'):
+            track_list = [f'{track},' for track in request.form.getlist('track')];
+            payload['seed_tracks'] = track_list
+
+        if request.form.get('seed_genre'):
+            payload['seed_genres'] = request.form.get('seed_genre')
+
+        if request.form.get('acousticness'):
+            payload['target_acousticness'] = 1.0
+
+        if request.form.get('danceability'):
+            payload['target_danceability'] = 1.0
+
+        if request.form.get('energy'):
+            payload['target_energy'] = 1.0
+
+        if request.form.get('instrumentalness'):
+            payload['target_instrumentalness'] = 1.0
+
+        if request.form.get('liveness'):
+            payload['target_liveness'] = 1.0
+
+        if request.form.get('speechiness'):
+            payload['target_speechiness'] = 1.0
+
+        if request.form.get('valence'):
+            payload['target_valence'] = 1.0
+
+        if request.form.get('include_min_duration'):
+            payload['min_duration_ms'] = int(request.form.get('min_duration'))
+
+        if request.form.get('include_max_duration'):
+            payload['max_duration_ms'] = int(request.form.get('max_duration'))
+
+        if request.form.get('key'):
+            payload['target_key'] = int(request.form.get('key'))
+
+        if request.form.get('include_loudness'):
+            payload['target_loudness'] = float(request.form.get('loudness'))
+
+        if request.form.get('mode'):
+            payload['target_mode'] = int(request.form.get('mode'))
+
+        if request.form.get('include_popularity'):
+            payload['target_popularity'] = int(request.form.get('popularity'))
+        
+        if request.form.get('include_tempo'):
+            payload['target_tempo'] = float(request.form.get('tempo'))
+        
+        if request.form.get('include_time_sig'):
+            payload['target_time_signature'] = int(request.form.get('time_sig'))
+
     
-    payload = {
 
-        }
+        resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
+        
+        track_id_list = []
+        for track in resp['tracks']:
+            track_id_list.append(track['id'])
 
-    if request.form.get('artist'):
-        artist_list = [f'{artist},' for artist in request.form.getlist('artist')];
-        payload['seed_artists'] = artist_list
+        track_uris = ""
+        for track_uri in resp['tracks']:
+            track_uris += track_uri['uri']+','
 
-    for id in request.form.getlist('track'):
-        track_list = [f'{track},' for track in request.form.getlist('track')];
-        payload['seed_tracks'] = track_list
+        playlist_id = None
 
-    if request.form.get('seed_genre'):
-        payload['seed_genres'] = request.form.get('seed_genre')
+        if session.get('user_id'):
+            session['playlist_id'] = create_playlist(session['user_id'])
+            playlist_id = session['playlist_id']
+            add_songs_to_playlist(session['playlist_id'], track_uris)
 
-    if request.form.get('acousticness'):
-        payload['target_acousticness'] = 1.0
-
-    if request.form.get('danceability'):
-        payload['target_danceability'] = 1.0
-
-    if request.form.get('energy'):
-        payload['target_energy'] = 1.0
-
-    if request.form.get('instrumentalness'):
-        payload['target_instrumentalness'] = 1.0
-
-    if request.form.get('liveness'):
-        payload['target_liveness'] = 1.0
-
-    if request.form.get('speechiness'):
-        payload['target_speechiness'] = 1.0
-
-    if request.form.get('valence'):
-        payload['target_valence'] = 1.0
-
-    if request.form.get('include_min_duration'):
-        payload['min_duration_ms'] = int(request.form.get('min_duration'))
-
-    if request.form.get('include_max_duration'):
-        payload['max_duration_ms'] = int(request.form.get('max_duration'))
-
-    if request.form.get('key'):
-        payload['target_key'] = int(request.form.get('key'))
-
-    if request.form.get('include_loudness'):
-        payload['target_loudness'] = float(request.form.get('loudness'))
-
-    if request.form.get('mode'):
-        payload['target_mode'] = int(request.form.get('mode'))
-
-    if request.form.get('include_popularity'):
-        payload['target_popularity'] = int(request.form.get('popularity'))
+        return render_template("results.html", resp=resp, track_id_list=track_id_list, playlist_id=playlist_id)
     
-    if request.form.get('include_tempo'):
-        payload['target_tempo'] = float(request.form.get('tempo'))
-    
-    if request.form.get('include_time_sig'):
-        payload['target_time_signature'] = int(request.form.get('time_sig'))
+    except KeyError:
+        message = "Please enter at least an artist, song, or genre"
+        genres = get_genres()
+        keys = get_key_list()
+        modes = get_modes()
 
-   
-
-    resp = requests.get('https://api.spotify.com/v1/recommendations', params=payload, headers=headers).json()
-    
-    track_id_list = []
-    for track in resp['tracks']:
-        track_id_list.append(track['id'])
-
-    track_uris = ""
-    for track_uri in resp['tracks']:
-        track_uris += track_uri['uri']+','
-
-    playlist_id = None
-
-    if session.get('user_id'):
-        session['playlist_id'] = create_playlist(session['user_id'])
-        playlist_id = session['playlist_id']
-        add_songs_to_playlist(session['playlist_id'], track_uris)
-
-    return render_template("results.html", resp=resp, track_id_list=track_id_list, playlist_id=playlist_id)
+        return render_template("search.html", genres=genres, keys=keys, modes=modes, message=message)
 
 
 @app.route("/delete", methods=["GET"])
 def unfollow_playlist():
     """"""
-    
     delete_playlist(session['playlist_id'])
 
-    return redirect('/playground')
+    message = "Playlist deleted from Spotify"
+    genres = get_genres()
+    keys = get_key_list()
+    modes = get_modes()
+
+    return render_template("search.html", genres=genres, keys=keys, modes=modes, message=message)
 
 @app.route("/logout")
 def logout_user():
@@ -175,9 +191,6 @@ def logout_user():
     session.clear()
 
     return redirect('/')
-
-
-# playlist_id=session['playlist_id']
 
 
 @app.route("/user_auth", methods=["GET"])

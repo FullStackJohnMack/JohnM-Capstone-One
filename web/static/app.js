@@ -1,31 +1,49 @@
 const $artist_search = $('#artist_search')
 const $artist_search_results = $('#artist_search_results')
 const $artist_search_button = $('#artist_search_button')
+const $seed_submit_button = $('#seed_submit_button')
 
 $artist_search_button.on("click", async function (evt) {
 
     evt.preventDefault();
-        
+
+    $("#artist_not_found_alert").remove()
+
+    if ($("input[name='radio1']:checked").val() == undefined) {
+        $artist_search.append('<div id="radio_alert" class="alert alert-danger mt-4" role="alert">Select either "Artist" or "Song" along with a query when trying to Add Search Results</div>');
+        return
+    }
 
     const seed_id = await getId($('#input1').val(), $("input[name='radio1']:checked").val()) 
 
 
     if (seed_id.data.input_type == 'artist') {
+        if (seed_id.data.artists.total == 0) {
+            message = '<div id="artist_not_found_alert" class="alert alert-warning mt-4" role="alert">Artist not found</div>'
+            $artist_search.append(message)
+        }
+
         for (result of seed_id.data.artists.items) {
             link = `<label class="btn btn-outline-success btn-sm m-2"><input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name}</label>`
             $artist_search_results.append(link)
         }
-        console.log("artist added")
     }
 
     if (seed_id.data.input_type == 'track') {
-        for (result of seed_id.data.tracks.items) {
+        if (seed_id.data.tracks.total == 0) {
+            message = '<div id="artist_not_found_alert" class="alert alert-warning mt-4" role="alert">Song not found</div>'
+            $artist_search.append(message)
+        }
 
+        for (result of seed_id.data.tracks.items) {
             link = `<label class="btn btn-outline-success btn-sm m-2"><input type="checkbox" name="${seed_id.data.input_type}" value="${result.id}" class="form-check-input">${result.name} - ${result.artists[0].name}</label>`
             $artist_search_results.append(link)
         }
-        console.log("track added")
     }
+
+    
+
+    
 
     //resets form after return of artists/tracks
     $('#input1','')
@@ -34,6 +52,10 @@ $artist_search_button.on("click", async function (evt) {
     $("input[name='radio1']")
     .prop('checked', false);
 
+    $("label")
+    .removeClass('active');
+
+    $("#radio_alert").remove()
 
 })
 
@@ -48,38 +70,3 @@ async function getId (inputName, inputType) {
 
     return resp
 }
-
-
-// {% for song in song_list %}
-// <div class="container">
-//     <iframe src="https://open.spotify.com/embed/track/{{song}}" width="400px" height="100px" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-// </div>
-// {% endfor %}
-
-// 'Content-Type':'application/x-www-form-urlencoded'
-
-
-// @app.route("/user_auth")
-// def get_spotify_auth():
-//     """"""
-//     code = request.args.get('code')
-//     resp = requests.post('https://accounts.spotify.com/api/token', 
-//         data ={
-//             "grant_type": "authorization_code",
-//             "code": code,
-//             "redirect_uri": "http://localhost:5000/auth",
-//             "client_id": CLIENT_ID,
-//             "client_secret": CLIENT_SECRET
-//         }).json()
-//     token = resp['access_token']
-//     refresh_token = resp['refresh_token']
-//     session['token'] = token
-//     session['refresh_token'] = refresh_token
-//     session['user_id'] = get_user_id()
-//     return redirect('/playground')
-
-// <ul>
-//     {% for result in resp['tracks'] %}
-//         <li><a href="{{result['external_urls']['spotify']}}" target="blank">{{result['artists'][0].name}} - {{result.name}}</a></li>
-//     {% endfor %}
-// </ul>

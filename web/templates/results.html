@@ -2,8 +2,10 @@
 {% block title %}Results{% endblock %}
 {% block content %}
 
+    
 
     {% if playlist_id != None %}
+        <a href="/delete" class="btn btn-danger btn-lg mt-4">Remove This Playlist From Spotify and Search Again</a>
         <div class="card mt-4 shadow">
             <h5 class="card-header">Search Results</h5>
             <div class="card-body">
