@@ -76,7 +76,7 @@ def get_spotify_user_auth():
             data ={
                 "grant_type": "authorization_code",
                 "code": code,
-                "redirect_uri": "http://localhost:5000/user_auth",
+                "redirect_uri": "https://the-spotify-playground.herokuapp.com/user_auth",
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET
             }).json()
