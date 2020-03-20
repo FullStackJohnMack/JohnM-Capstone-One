@@ -1,11 +1,12 @@
-The Spotify Playground  
-HEROKU LINK GOES HERE  
-ADD IMAGE OF APP  
+# <b>The Spotify Playground</b>  
+### <b>https://the-spotify-playground.herokuapp.com/ (live demo)</b>
 ---
-This website allows a way to seed Spotify's recommendation algortihm in an easy-to-use GUI. There are two routes into the search: one is an application level, server side login; and the second is a user login on Spotify's servers which allows for the ability to save resultant playlists to the user's Spotify account.  
+![Screenshot of app](app_screenshot.jpg)   
+---
+This website allows a way to seed Spotify's recommendation algortihm in an easy-to-use GUI. There are two routes into the search: one is an application level, server side login; and the second is a user login on Spotify's servers which allows for the ability to save resultant playlists to the user's Spotify account. We have no affiliation with Spotify but very much appreciate their API access and industry-leading musical algorithms.
 
 ---
-<b>The tech stack we're using on this project includes:</b>
+## <b>The tech stack we're using on this project includes:</b>
 - HTML
 - CSS
 - JavaScript
@@ -13,7 +14,7 @@ This website allows a way to seed Spotify's recommendation algortihm in an easy-
 - Python
 - Flask
 ---
-<b>Endpoints used in this project include:</b>  
+## <b>Endpoints used in this project include:</b>  
 
 <b>Get Recommendations</b>  
 https://api.spotify.com/v1/recommendations
