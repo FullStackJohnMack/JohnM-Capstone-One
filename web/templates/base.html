@@ -34,9 +34,11 @@
             {% endif %}
           </div> 
 
-          <div>
-            <a class="btn btn-sm btn-outline-secondary" href="/logout" class="nav-link">Unlink from Spotify</a>
-          </div>
+          {% if session.get('user_id') %}
+            <div>
+              <a class="btn btn-sm btn-outline-secondary" href="/logout" class="nav-link">Unlink from Spotify</a>
+            </div>
+          {% endif %}
 
         </div>
       </nav>

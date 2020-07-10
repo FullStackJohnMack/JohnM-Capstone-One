@@ -4,30 +4,13 @@
 
 {% block content %}
 
-<div class="card my-4 shadow">
-    <h5 class="card-header">How this works:</h5>
-    <div class="card-body">
-        <ul>
-            <li>Include at least one artist, song, or genre in every Playground search</li>
-            <li>Choose <b>up to five artists, songs, or genre</b> (in any combination) in a Playground search</li>
-            <li>Everything else is optional</li>
-        </ul>
-    </div>
-</div>
-
 {% if message %}
     <div id="radio_alert" class="alert alert-danger mt-4" role="alert">{{ message }}</div>
 {% endif %}
 
-<div class="card mb-4">
-    <h5 class="card-header">Search for artists or songs here (OPTIONAL)</h5>
+<div class="card mb-4 mt-4">
+    <h5 class="card-header">1. Search for artists or songs to add</h5>
     <div class="card-body">
-        <ul>
-            <li>This is <b>OPTIONAL</b></li>
-            <li>Select either Artist or Song for every Add Search here</li>
-            <li>After a search, any results will be included in the form below</li>
-            <li>Looking for artists or songs here doesn't automatically include them in the Playground search</li>
-        </ul>
 
     <form id="artist_search">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -44,17 +27,15 @@
                     Song
                 </label>
             </div>
-            <button id="artist_search_button" class="btn btn-outline-primary ml-3">Add Search Results</button>
+            <button id="artist_search_button" class="btn btn-outline-primary ml-3">Add Search Results To Next Pane</button>
         </div>
     </form>
     </div>
 </div>
 
 <div class="card mb-3">
-    <h5 class="card-header">Choose at least one artist, song, or genre and any optional filters below:</h5>
+    <h5 class="card-header">2. Make your selections</h5>
     <form method="POST" action="seed" id="search_form" class="card-body">
-        
-        <button class="btn btn-primary btn-lg m-2" type="submit">Search the Playground</button>
 
         <div id="artist_search_results" class="btn-group-toggle" data-toggle="buttons">
             <!-- Artist or song results append here -->
@@ -78,7 +59,7 @@
 
             <label class="btn btn-outline-success btn-sm m-2">
                 <input type="checkbox" name="danceability" value="1" class="form-check-input">
-                Danceble music?
+                Danceable music?
             </label>
 
             <label class="btn btn-outline-success btn-sm m-2">
@@ -130,39 +111,43 @@
         <hr>
 
         <div class="btn-group-toggle" data-toggle="buttons">
+
             <label class="btn btn-outline-success btn-sm m-2">Enable Loudness
             <input type="checkbox" name="include_loudness" value="1" class="form-check-input">
-            <input type="range" id="loudness" name="loudness" min="-60" max="0" class="form-control">
+            <input type="range" id="loudness" name="loudness" min="-60" max="0" class="custom-range">
             </label>
     
             <label class="btn btn-outline-success btn-sm m-2">Enable Popularity
             <input type="checkbox" name="include_popularity" value="1" class="form-check-input">
-            <input type="range" id="popularity" name="popularity" min="0" max="100" class="form-control">
+            <input type="range" id="popularity" name="popularity" min="0" max="100" class="custom-range">
             </label>
         
             <label class="btn btn-outline-success btn-sm m-2">Enable Tempo (beats per minute from 0-300)
             <input type="checkbox" name="include_tempo" value="1" class="form-check-input">
-            <input type="range" id="tempo" name="tempo" min="0" max="300" class="form-control">
+            <input type="range" id="tempo" name="tempo" min="0" max="300" class="custom-range">
             </label>
 
             <label class="btn btn-outline-success btn-sm m-2">Enable Time Signature (beats per measure from 2-12)
             <input type="checkbox" name="include_time_sig" value="1" class="form-check-input">
-            <input type="range" id="time_sig" name="time_sig" min="2" max="12" class="form-control">
+            <input type="range" id="time_sig" name="time_sig" min="2" max="12" class="custom-range">
             </label>
 
             <label class="btn btn-outline-success btn-sm m-2">Min. Duration (1-10 mins.)
             <input type="checkbox" name="include_min_duration" value="1" class="form-check-input">
-            <input type="range" id="min_duration" name="min_duration" min="60000" max="600000" class="form-control">
+            <input type="range" id="min_duration" name="min_duration" min="60000" max="600000" class="custom-range">
             </label>
 
             <label class="btn btn-outline-success btn-sm m-2">Max. Duration (1-10 mins.)
             <input type="checkbox" name="include_max_duration" value="1" class="form-check-input">
-            <input type="range" id="max_duration" name="max_duration" min="60000" max="600000" class="form-control">
+            <input type="range" id="max_duration" name="max_duration" min="60000" max="600000" class="custom-range">
             </label>
 
         </div>
-        <button class="btn btn-primary btn-lg m-2" type="submit">Search the Playground</button>
-    </form>
-</div>
+        
+        
+    
+</div><div class="card mb-3">
+            <button class="btn btn-primary btn-lg m-2" type="submit">3. Get Music</button>  
+        </div></form>
 
 {% endblock %}

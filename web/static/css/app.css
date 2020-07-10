@@ -1,5 +1,6 @@
 body {
-    background: url(/static/images/background.jpg) no-repeat center center fixed;
+    /* background: url(/static/images/background.jpg) no-repeat center center fixed; */
+    background: linear-gradient(rgb(211, 233, 211), rgb(63, 140, 255)) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
