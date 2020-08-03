@@ -136,12 +136,16 @@ def show_recommendations():
 
         # gets a list of artists to be searched for, if any
         if request.form.get('artist'):
-            artist_list = [f'{artist},' for artist in request.form.getlist('artist')]
+            artist_list = ""
+            for artist in request.form.getlist('artist'):
+                artist_list += f"{artist},"
             payload['seed_artists'] = artist_list
 
         # gets a list of tracks to be searched for, if any
         if request.form.get('track'):
-            track_list = [f'{track},' for track in request.form.getlist('track')]
+            track_list = ""
+            for track in request.form.getlist('track'):
+                track_list += f"{track},"
             payload['seed_tracks'] = track_list
         
         # gets the genre to be searched for, if any
